@@ -4,7 +4,7 @@ from prefect.settings import PREFECT_UI_URL
 
 @flow
 def conda_build(name: str):
-    get_run_logger().info(f"View the parent flow run at {f"{PREFECT_UI_URL.value()}/flow-runs/flow-run/{flow_run.get_id()}"}")
+    get_run_logger().info(f"View the parent flow run at {PREFECT_UI_URL.value()}/flow-runs/flow-run/{flow_run.get_id()}")
     clone_repo()
     build(name)
     write_artifact()
