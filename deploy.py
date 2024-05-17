@@ -1,9 +1,9 @@
 from prefect import flow
 
 WORK_POOLS = [
-    "universal-pool",
-    "mac-pool",
-    "linux-pool",
+    "universal",
+    "mac",
+    "linux",
 ]
 
 if __name__ == "__main__":
