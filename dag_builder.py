@@ -76,7 +76,7 @@ class DAGBuilder(BaseModel):
     """
     Add task or deployment runs to be called within a flow. Run the dag with .run().
     
-    Since a DAG in Prefect 2 is an arbitrary construct, and number of DAGs may be built
+    Since a DAG in Prefect 2 is an arbitrary construct, any number of DAGs may be built
     and run within a single flow.
     """
     tasks: list[DAGTask] = Field(
