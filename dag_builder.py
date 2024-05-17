@@ -1,20 +1,26 @@
 from collections import defaultdict, deque
 from typing import Any, Callable
 
-from prefect import task
+from prefect import task, get_run_logger
 from prefect.client.schemas import FlowRun
 from prefect.deployments import run_deployment
 from prefect.utilities.collections import visit_collection
+from prefect.settings import PREFECT_UI_URL
 
 from pydantic import BaseModel, Field, root_validator
 
 
 @task
-def run_deployment_task(name: str, parameters: dict, get_persisted_result: bool = False):
-    flow_run: FlowRun = run_deployment(name=name, parameters=parameters)
+def run_deployment_task(name: str, parameters: dict, get_persisted_result: bool = False, as_subflow: bool = False):
+    flow_run: FlowRun = run_deployment(name=name, parameters=parameters, as_subflow=as_subflow)
+    
+    get_run_logger().info(f"View the flow run created by this task at {get_flow_run_ui_url(flow_run.id)}")
 
     if get_persisted_result:
         return flow_run.state.result()
+    
+def get_flow_run_ui_url(flow_run_id) -> str:
+    return f"{PREFECT_UI_URL.value()}/flow-runs/flow-run/{flow_run_id}"
 
 
 class ResultPlaceholder(BaseModel):
@@ -83,6 +89,7 @@ class DAGBuilder(BaseModel):
         deployment_name: str,
         depends_on: list[str],
         get_persisted_result: bool = False,
+        as_subflow: bool = False,
         parameters: dict | None = None,
     ):
         return self.add_task(
@@ -93,6 +100,7 @@ class DAGBuilder(BaseModel):
                 "name": f"{flow_name}/{deployment_name}",
                 "parameters": parameters,
                 "get_persisted_result": get_persisted_result,
+                "as_subflow": as_subflow,
             },
             depends_on=depends_on,
         )
