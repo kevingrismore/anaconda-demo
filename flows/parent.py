@@ -16,6 +16,7 @@ def parent():
             flow_name="conda-build",
             deployment_name=f"conda-build-{node.platform}",
             depends_on=node.depends_on,
+            parameters={"name": node.name},
         )
 
     dag.run()
