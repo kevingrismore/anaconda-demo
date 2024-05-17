@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     parent_flow.deploy(
         name="conda-parent",
-        work_pool_name="universal-pool",
+        work_pool_name="universal",
         build=False,
         ignore_warnings=True,
     )

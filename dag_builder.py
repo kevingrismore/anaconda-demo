@@ -10,9 +10,11 @@ from pydantic import BaseModel, Field, root_validator
 
 
 @task
-def run_deployment_task(name: str, parameters: dict):
+def run_deployment_task(name: str, parameters: dict, get_persisted_result: bool = False):
     flow_run: FlowRun = run_deployment(name=name, parameters=parameters)
-    return flow_run.state.result()
+
+    if get_persisted_result:
+        return flow_run.state.result()
 
 
 class ResultPlaceholder(BaseModel):
@@ -80,6 +82,7 @@ class DAGBuilder(BaseModel):
         flow_name: str,
         deployment_name: str,
         depends_on: list[str],
+        get_persisted_result: bool = False,
         parameters: dict | None = None,
     ):
         return self.add_task(
@@ -89,6 +92,7 @@ class DAGBuilder(BaseModel):
             parameters={
                 "name": f"{flow_name}/{deployment_name}",
                 "parameters": parameters,
+                "get_persisted_result": get_persisted_result,
             },
             depends_on=depends_on,
         )
