@@ -5,7 +5,7 @@ from graph_parser import Graph
 
 
 @flow
-def parent_graph():
+def parent():
     graph = Graph("graph.json")
     dag = DAGBuilder()
 
